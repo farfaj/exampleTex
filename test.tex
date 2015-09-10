@@ -1,0 +1,48 @@
+\documentclass[onepage,a4paper, 12pt]{book}
+\usepackage{phdthesis}
+	\usepackage{graphicx}
+	\usepackage{subcaption}
+	\usepackage{caption}
+	\usepackage{blindtext}
+	
+\begin{document}
+	\section{Introduction} % (fold)
+	\label{sec:introduction}
+
+	The goal of entity finding applications is to retrieve the most relevant entities for a given query. In a document collection, there may be many possible candidate entities that have some relation to the query. The task is to identify which of these candidate entities are most likely to be relevant. 
+
+	It is possible to formally state	It is possible to formally state	It is possible to formally state this problem as follows: what is the degree of \emph{relevance} of a candidate entity $ca$ to the query $q$? Specifically, we aim to determine the relevance $p(ca|q)$, and rank candidate entities accordingly. Estimating this relevance accurately is the core of any such application. For this, we employ the two-stage model proposed by [1].
+
+	It is possible to consider documents to be a list of words. Subsequently, the position of words in the list could be used to  express proximity between terms as in the discussion of kernel functions in Section 3.4. But this may not always be appropriate, as here, when we wish to consider multi-word queries and candidates. Instead, we introduce $t_q \in d$  and $t_c \in d$ as expressing that $t_q$ and $t_c$ is some instance (token) of the query $q$ or candidate $c$ in document $d$.
+
+	We then use a notion of $\delta(t_1, t_2)$ to represent the distance (i.e. number of words) between instances of terms $t_1$ and $t_2$, as mentioned in Section 4.5.
+
+	Now, we could determine the relevance of a candidate entity using the two stages model [3] as follows:
+	\begin{equation}
+		\label{twoSatges}
+		p(ca|q)= \sum_d{p(ca,d|q)}=\sum_d{p(ca|d,q)\cdot p(d|q)}.
+	\end{equation} 
+
+	The first part, $p(ca|d,q)$, measures the relevance of a candidate entity $ca$ to the query by considering document $d$. This relevance is then weighted by how relevant document $d$ is to the query, which calculated in the second part, $p(d|q)$. This will bestow more importance to candidate entities mentioned in highly relevant documents.
+Whenever a query is mentioned within a document, an adaptive window will be placed around it. Half of the window will be located on the left of the query while the other half is placed of the right side. This process is preformed regardless of the query size. For example, if the query is composed of one word only (e.g., ``Essex") and the size of the adaptive window is ten words, then five words will be considered to both sides of the query. Similarly, if the query is composed of more than one word (e.g., ``University of Essex"), in this case, five words will considered to the left of the word ``University" and five words will be considered to the right of the word ``Essex". In some cases, the query might be located towards the beginning or the end of the document. In such instances, part of the window could exceed the document limits, in which case the part of the window that appears out of the document will be discarded. That should not affect the ranking of entities located on the other side. Figure 1 shows some examples of the window located at different places of the document. It can be seen in examples 3.4-(c) and 3.4-(d) that only half of the window is accommodated within the document. In examples 3.4-(e) and 3.4-(f), half of the window located in the document and only two words of the other half occurs to be in the document, thus we discarded the remaining three words as they are not in the document.
+ 
+% \blindtext[1]
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=.90\textwidth]{example_a.pdf}
+  \captionsetup{justification=justified,margin=1cm}  
+  \caption{A window of ten words placed around the query ``University of Essex" and ``Essex" at different places of the document. The query is represented by a bold face while the window marked with a different colour.}
+  \label{fig:WindowExamples}
+\end{figure}
+
+Our approach also allows for the candidate evidence to be more than one word. In the case of multi-word evidence, the weighting function considers the part of the evidence that is closer to the query and score the entity based on it. In example \ref{fig:WindowExamples_b}-(a) the entity is scored based on the location of the word ``Lucas" although the word ``Simon" is located out of the window. Similarly, in example \ref{fig:WindowExamples_b}-(b), the entity is scrod based on the location of the word ``Simon" because it has the higher weight. 
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=0.90\textwidth]{example_b2.pdf}
+    \captionsetup{justification=justified,margin=1cm}  
+  \caption{Examples of multi-word evidence occurs at different places of the window.}
+  \label{fig:WindowExamples_b}
+\end{figure}
+\end{document}
